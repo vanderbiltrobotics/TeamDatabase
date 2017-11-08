@@ -262,6 +262,59 @@ def getMeetingsToday():
 		meetingIds.append(meeting[2])
 	return output, meetingIds
 
+#Returns a list of strings containing the start time, end time, and dates for all meetings
+def getMeetingsAll():
+	queryString = """
+	SELECT meeting_date, start_time, end_time, meeting_id
+	FROM meeting;"""
+
+	output = []
+	meetingIds = []
+	meetings = db.dbExecuteReturnAll(queryString)
+	for meeting in meetings:
+		output.append(meeting[0].strftime("%m/%d") + ": " + meeting[1].strftime("%H:%M") + " - "  + meeting[2].strftime("%H:%M"))
+		meetingIds.append(meeting[3])
+
+	return output, meetingIds
+
+#Retrieves user id and user name from database based on name
+# Can retrieve users by portion of name at beginning, in middle, or at end of name string
+def getUsersByName(nameIn):
+	nameIn = "%" + nameIn + "%"
+	queryString = """
+	SELECT card_id, user_name
+	FROM team_member
+	WHERE user_name LIKE %(nameIn)s;"""
+	inputs = {
+		'nameIn' : nameIn
+	}
+
+	userNames = []
+	userIds = []
+	users = db.dbExecuteReturnAll(queryString, inputs)
+	for user in users:
+		userIds.append(user[0])
+		userNames.append(user[1])
+
+	return userIds,userNames
+
+# Generates a list of emails of all of users who attended specified meeting
+def getMeetingAttendance(meetingId):
+	queryString = """
+	SELECT team_member.email
+	FROM meeting_attendance
+	INNER JOIN team_member ON meeting_attendance.member_id = team_member.card_id
+	WHERE meeting_attendance.meeting_id = %(meetingId)s AND meeting_attendance.time_in IS NOT NULL;"""
+	inputs = {
+		'meetingId' : meetingId
+	}
+	emails = ""
+	output = db.dbExecuteReturnAll(queryString, inputs)
+	for user in output:
+		emails += user[0] + "\n"
+
+	return emails
+
 
 #BEGIN PROGRAM EXECUTION -------------------------------------------------------------------------------------------------------
 while(True):
@@ -302,6 +355,18 @@ while(True):
 	#CREATE A NEW MEETING
 	if(selection == 3):
 		createMeetingUI()
-	
+
+	#GET MEETING STATS
+	if(selection == 4):
+		meeting = 0
+		#Retrieving Meetings and respective IDs
+		meetings, meetingsIds = getMeetingsAll()
+		#Prompting the user to make a selection for meeting
+		meetingSelection = listPrompt(meetings)
+		if(meetingSelection != 0):
+			meeting = meetingsIds[meetingSelection - 1]
+		print(getMeetingAttendance(meeting))
+
+
 
 
