@@ -6,10 +6,11 @@ import datetime
 filename = 'dbcreds.txt' 
 fileIn = open(filename,'r')
 
-dbName = fileIn.readLine()
-dbUser = fileIn.readLine()
-dbHost = fileIn.readLine()
-dbPassword = fileIn.readLine()
+dbName = fileIn.readline().strip()
+dbUser = fileIn.readline().strip()
+dbHost = fileIn.readline().strip()
+dbPassword = fileIn.readline().strip()
+
 
 fileIn.close()
 
