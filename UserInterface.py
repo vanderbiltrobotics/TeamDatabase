@@ -25,7 +25,7 @@ db = database.DatabaseConnection(dbName, dbUser, dbHost, dbPassword)
 def getSwipe():
 	card = ""
 	while(len(card) != 20):
-		card = raw_input("Swipe your card: ")
+		card = input("Swipe your card: ")
 		if(card.find('%E?') == 0):
 			card = card[3:]
 		if(card.find('+E?') == 20):
@@ -49,7 +49,7 @@ def listPrompt(options):
 	val = input("Make a selection: ")
 	while(int(val) < 0 or int(val) > i):
 		val = input("Invalid Input. Be smarter: ")
-	return val
+	return int(val)
 
 
 #Registers users in database
@@ -88,22 +88,22 @@ def getSubsystemString():
 def registerUserUI(cardID):
 	print("Welcome to Swapnil's Super Sexy Sign-in Software System v3.14! I see that you have never signed-in before (maybe you should start coming to meetings).")
 	print("Please enter your information in the following prompts. If you have previously registered, let Swapnil know that something is fucked up.")
-	name = raw_input("Full Name: ")
-	grade = raw_input("Year (1, 2, 3, or 4): ")
-	email = raw_input("Email: ")
-	phone = raw_input("Phone: ")
+	name = input("Full Name: ")
+	grade = input("Year (1, 2, 3, or 4): ")
+	email = input("Email: ")
+	phone = input("Phone: ")
 
 	print('\n')
 	print(getMajorsString())
-	major = raw_input("Enter Major NUMBER : ")
+	major = input("Enter Major NUMBER : ")
 
 	print('\n')
 	print(getSubteamString())
-	subteam = raw_input("Enter Subteam NUMBER: ")
+	subteam = input("Enter Subteam NUMBER: ")
 
 	print('\n')
 	print(getSubsystemString())
-	subsystem = raw_input("Enter Subsystem NUMBER: ")
+	subsystem = input("Enter Subsystem NUMBER: ")
 
 	userID = registerUserDB(cardID,name,subteam,subsystem,major,grade,email,phone)
 	return (userID, name)
@@ -223,9 +223,9 @@ def signOutUserUI(cardID, meeting_id):
 #May want to add functionality in the future to ingest file containing meetings for ease
 def createMeetingUI():
 	#Getting and formatting inputs
-	date = raw_input("Enter Meeting Date (MM/DD): ").replace(' ','')
-	startTime = raw_input("Enter meeting start time (HH:MM) (24-hour time): ").replace(' ','')
-	endTime = raw_input("Enter meeting end time (HH:MM) (24-hour time): ").replace(' ','')
+	date = input("Enter Meeting Date (MM/DD): ").replace(' ','')
+	startTime = input("Enter meeting start time (HH:MM) (24-hour time): ").replace(' ','')
+	endTime = input("Enter meeting end time (HH:MM) (24-hour time): ").replace(' ','')
 	date += "/" + str(datetime.datetime.now().year)
 	startTime += ":00"
 	endTime += ":00"
@@ -336,7 +336,7 @@ while(True):
 			print('\n')
 			card = getSwipe()
 			signInUserUI(card, meeting)
-
+	
 	#SIGN OUT USERS
 	if(selection == 2):
 		meeting = 0
@@ -354,6 +354,7 @@ while(True):
 			signOutUserUI(card, meeting)
 	#CREATE A NEW MEETING
 	if(selection == 3):
+		
 		createMeetingUI()
 
 	#GET MEETING STATS

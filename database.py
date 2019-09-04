@@ -18,7 +18,7 @@ class DatabaseConnection:
 		    self.conn = psycopg2.connect(dbConnect)
 		except:
 		    #TODO throw error here
-		    print "I am unable to connect to the database"
+		    print("I am unable to connect to the database")
 
 		self.conn.rollback()
 
